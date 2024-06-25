@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,5 +110,21 @@ public class EmployeeController {
         log.info("查询员工分页，参数为：{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     * 启用或停用员工账号
+     * 
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用或停用员工账号")      
+    //此处status为Path参数,而id为Query参数      * 即： status/{status}?id=xxx
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("启用或停用员工账号: status: {}, id: {}", status, id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
     }
 }
