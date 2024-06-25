@@ -1,19 +1,24 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +90,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateTime(LocalDateTime.now());
 
         //设置当前记录的创建人和修改人id
-        //TODO 后期修改为当前修改者的id
         employee.setCreateUser(BaseContext.getCurrentId());
         employee.setUpdateUser(BaseContext.getCurrentId());
 
@@ -95,4 +99,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         BaseContext.removeCurrentId();
     }
 
+        /**
+         * 分页查询员工
+         * @param employeePageQueryDTO
+         * @return
+         */
+        public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+            // select * from employee limit 0,10
+            //开始分页查询
+            PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+           Page<Employee> page=employeeMapper.pageQuery(employeePageQueryDTO);
+
+           Long total=page.getTotal();
+           List<Employee> records=page.getResult();
+           return new PageResult(total, records);
+        }
 }
