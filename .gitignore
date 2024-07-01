@@ -6,3 +6,4 @@
 **/test/
 nginx-1.20.2/logs/
 nginx-1.20.2/temp/
+sky-take-out/sky-server/src/main/resources/application-dev.yml
